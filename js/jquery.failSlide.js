@@ -5,8 +5,6 @@
 
 (function($) {
 	$.fn.failSlide = function(store) {
-
-		console.log('hello');
 		$.getJSON(store, function(data) {
 
 			var arr = $.map(data.pictures, function(el) {
@@ -87,33 +85,41 @@
 						return i;
 					}
 				}
-
-
 				currItem = next();
-				console.log(next());
 				return next();
 			}
 
-			function fetch_async_image_loader(){
-
+			function fetch_async_image_loader(index, firstRun){
+				console.log(index);
 				var $current = $("." + options.container +" > img");
 				var $asyncImg = $("<img>");
-				var next = chooseNext(options.order,arr,currItem);
-
 				$asyncImg.load(setTransition(options.effect, $current, $asyncImg));
+				$asyncImg.attr("src", arr[index].url);
 
-				$asyncImg.attr("src", arr[next].url);
+				if(!firstRun){
+					chooseNext(options.order, arr, index)
+				}
+			}
 
-
+			//set our first image
+			if(options.order==="forward"){
+				var first = 0;
+			} else if (options.order==="backward"){
+				first = arr.length - 1;
+			} else if (options.order==="random"){
+				first = djsex.array.randomIndex(arr);
 			}
 
 			//run once to get first image loaded asap
-			fetch_async_image_loader();
+			fetch_async_image_loader(first, true);
+
+			currItem = chooseNext(options.order,arr,first);
+
 
 			//setTimeout to delay the second image coming in
 			//setInterval to keep the loop going
 			setTimeout(setInterval(function() {
-				fetch_async_image_loader();
+				fetch_async_image_loader(currItem, false);
 			}, options.duration), options.duration);
 
 		});
