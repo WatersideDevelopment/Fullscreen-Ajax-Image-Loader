@@ -15,8 +15,8 @@
 
 			var options = data.options;
 
-			var items = arr.length-1;
-			console.log(items);
+			var currItem = 0;
+
 
 			function setTransition(option, current, async){
 				var transition = null;
@@ -43,26 +43,68 @@
 				return transition;
 			}
 
+			function chooseNext(order, arr, current){
+				var next;
+				switch (order){
+					case "backward":
+						next = function() {
+							var i = current - 1;
+							if (i < 0) {
+								if (options.loop) {
+									i = arr.length - 1;
+								} else {
+									i = 0;
+								}
+							}
+							return i;
+						};
+
+						break;
+					case "random":
+						next = function() {
+							// do once
+							var i = djsex.array.randomIndex(arr);
+
+							////then keep going if no change in index
+							//while (i === current){
+							//	i = djsex.array.randomIndex(arr);
+							//}
+							return i;
+						};
+						break;
+
+					case "forward":
+					default:
+						next = function(){
+							var i = current + 1;
+							if (i > arr.length-1){
+								if(options.loop){
+									i = 0;
+								} else {
+									i = arr.length-1;
+								}
+							}
+						return i;
+					}
+				}
+
+
+				currItem = next();
+				console.log(next());
+				return next();
+			}
+
 			function fetch_async_image_loader(){
-				console.log(items);
 
 				var $current = $("." + options.container +" > img");
 				var $asyncImg = $("<img>");
+				var next = chooseNext(options.order,arr,currItem);
 
 				$asyncImg.load(setTransition(options.effect, $current, $asyncImg));
 
-				$asyncImg.attr("src", arr[items].url);
-				items --;
+				$asyncImg.attr("src", arr[next].url);
 
-				if (options.loop){
-					if (items < 0){
-						items = arr.length -1
-					}
-				} else {
-					if (items < 0){
-						items = 0;
-					}
-				}
+
 			}
 
 			//run once to get first image loaded asap

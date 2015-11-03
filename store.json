@@ -28,6 +28,7 @@
 	"container"	: "slide-show",
 	"effect"	: "none",
 	"duration"	: 5000,
-	"loop"	: true
+	"loop"	: true,
+	"order": "random"
   }
 }
