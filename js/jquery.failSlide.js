@@ -1,40 +1,78 @@
 //Fullscreen Ajax Image Loader
-//http://www.github.com/....
-// MIT://
+//https://github.com/WatersideDevelopment/Fullscreen-Ajax-Image-Loader
+//License: https://opensource.org/licenses/MIT
+
 
 (function($) {
 	$.fn.failSlide = function(store) {
 
-
+		console.log('hello');
 		$.getJSON(store, function(data) {
-			var arr = $.map(data, function(el) {
+
+			var arr = $.map(data.pictures, function(el) {
 					return el;
 				});
 
+			var options = data.options;
+
 			var items = arr.length-1;
+			console.log(items);
+
+			function setTransition(option, current, async){
+				var transition = null;
+				switch (option) {
+					case "none":
+						transition = function(){
+							current.attr("src", async.attr("src"));
+						};
+						break;
+					case "fade":
+						transition = function (){
+							current.fadeOut(1000, function(){
+								current.attr("src", async.attr("src"));
+							} ).fadeIn(1000);
+						};
+						break;
+					default:
+						transition = function(){
+							current.attr("src", async.attr("src"));
+						};
+						break;
+				}
+
+				return transition;
+			}
 
 			function fetch_async_image_loader(){
-				//console.log("running");
+				console.log(items);
 
-				var $current = $(".slide-show > img");
+				var $current = $("." + options.container +" > img");
 				var $asyncImg = $("<img>");
 
-				$asyncImg.load(function(){
-					$current.fadeOut(1000, function(){
-						$current.attr("src", $asyncImg.attr("src"));
-					} ).fadeIn(1000);
-				});
+				$asyncImg.load(setTransition(options.effect, $current, $asyncImg));
 
 				$asyncImg.attr("src", arr[items].url);
 				items --;
-				if (items < 0){
-					items = arr.length -1
+
+				if (options.loop){
+					if (items < 0){
+						items = arr.length -1
+					}
+				} else {
+					if (items < 0){
+						items = 0;
+					}
 				}
 			}
 
+			//run once to get first image loaded asap
+			fetch_async_image_loader();
+
+			//setTimeout to delay the second image coming in
+			//setInterval to keep the loop going
 			setTimeout(setInterval(function() {
 				fetch_async_image_loader();
-			}, 4000), 5000);
+			}, options.duration), options.duration);
 
 		});
 	};

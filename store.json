@@ -22,5 +22,13 @@
 			"alt": "RFK at sunrise",
 			"copyright":"https://www.flickr.com/photos/mtaphotos/"
 		}
-	]
+	],
+
+  "options"	: {
+	"container"	: "slide-show",
+	"effect"	: "none",
+	"duration"	: 5000,
+	"loop"	: true
+
+  }
 }
