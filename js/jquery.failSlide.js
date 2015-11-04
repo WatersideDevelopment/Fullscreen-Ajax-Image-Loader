@@ -60,6 +60,12 @@
 						break;
 					case "random":
 						next = function() {
+							/*TODO -
+							* pick random index from set, eliminating each index from the set as it is chosen,
+							 * thus enabling us to eliminate "in-set" repeats if we so choose
+							* and prevent loops if looping set to false
+							* */
+
 							// do once
 							var i = djsex.array.randomIndex(arr);
 
@@ -90,7 +96,7 @@
 			}
 
 			function fetch_async_image_loader(index, firstRun){
-				console.log(index);
+				//console.log(index);
 				var $current = $("." + options.container +" > img");
 				var $asyncImg = $("<img>");
 				$asyncImg.load(setTransition(options.effect, $current, $asyncImg));
